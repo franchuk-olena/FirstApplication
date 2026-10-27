@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FirstApplication</string>
+    <string name="first_activity_text">First Activity</string>
+    <string name="second_activity_text">Second Activity</string>
+    <string name="run_second_activity_button">Run SecondActivity</string>
+    <string name="run_first_activity_button">Run FirstActivity</string>
+    <string name="send_email_button">Send Email</string>
+</resources>
