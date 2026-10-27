@@ -1,15 +1,11 @@
 package com.example.firstapplication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.firstapplication.databinding.ActivityMainBinding
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-
-    private companion object {
-        private const val TAG = "CalculatorApp"
-    }
 
     private lateinit var binding: ActivityMainBinding
 
@@ -23,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Timber.d("MainActivity успішно запущена!")
+
         setupClickListeners()
     }
 
@@ -35,18 +33,47 @@ class MainActivity : AppCompatActivity() {
 
         for (button in numberButtons) {
             button.setOnClickListener {
+                incrementAndLogClick()
                 onNumberClick(button.text.toString())
             }
         }
 
-        binding.btnAdd.setOnClickListener { onOperationClick("+") }
-        binding.btnSubtract.setOnClickListener { onOperationClick("-") }
-        binding.btnMultiply.setOnClickListener { onOperationClick("*") }
-        binding.btnDivide.setOnClickListener { onOperationClick("/") }
+        binding.btnAdd.setOnClickListener {
+            incrementAndLogClick()
+            onOperationClick("+")
+        }
+        binding.btnSubtract.setOnClickListener {
+            incrementAndLogClick()
+            onOperationClick("-")
+        }
+        binding.btnMultiply.setOnClickListener {
+            incrementAndLogClick()
+            onOperationClick("*")
+        }
+        binding.btnDivide.setOnClickListener {
+            incrementAndLogClick()
+            onOperationClick("/")
+        }
 
-        binding.btnEquals.setOnClickListener { onEqualsClick() }
-        binding.btnClear.setOnClickListener { onClearClick() }
-        binding.btnBackspace.setOnClickListener { onBackspaceClick() }
+        binding.btnEquals.setOnClickListener {
+            incrementAndLogClick()
+            onEqualsClick()
+        }
+        binding.btnClear.setOnClickListener {
+            incrementAndLogClick()
+            onClearClick()
+        }
+        binding.btnBackspace.setOnClickListener {
+            incrementAndLogClick()
+            onBackspaceClick()
+        }
+    }
+
+    // Метод для збільшення змінної в MyApp та виводу через Timber
+    private fun incrementAndLogClick() {
+        val app = application as MyApp
+        app.startCount++
+        Timber.d("Поточне значення startCount: ${app.startCount}")
     }
 
     private fun onNumberClick(digit: String) {
@@ -60,7 +87,6 @@ class MainActivity : AppCompatActivity() {
             }
             isNewInput = false
         } else {
-            // Перевірка на повторне введення крапки
             if (digit == "." && currentText.contains(".")) {
                 return
             }
@@ -73,12 +99,11 @@ class MainActivity : AppCompatActivity() {
 
         if (currentText == "Помилка") return
 
-        // Ланцюгові обчислення: якщо вже є збережене перше число та операція, спочатку рахуємо їх
         if (firstNumber != null && currentOperation != null && !isNewInput) {
             val num2 = currentText.toDoubleOrNull() ?: return
 
             if (currentOperation == "/" && num2 == 0.0) {
-                Log.w(TAG, "Спроба ділення на нуль під час ланцюгового обчислення")
+                Timber.w("Спроба ділення на нуль під час ланцюгового обчислення")
                 binding.tvDisplay.text = "Помилка"
                 resetState()
                 return
@@ -87,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             val intermediateResult = calculateResult(firstNumber!!, num2, currentOperation!!)
             firstNumber = intermediateResult
             binding.tvDisplay.text = formatResult(intermediateResult)
-            Log.d(TAG, "Ланцюговий результат: $intermediateResult, наступна операція: $operation")
+            Timber.d("Ланцюговий результат: $intermediateResult, наступна операція: $operation")
         } else {
             firstNumber = currentText.toDoubleOrNull()
         }
@@ -107,14 +132,14 @@ class MainActivity : AppCompatActivity() {
         val num2 = secondText.toDoubleOrNull() ?: return
 
         if (currentOperation == "/" && num2 == 0.0) {
-            Log.w(TAG, "Спроба ділення на нуль")
+            Timber.w("Спроба ділення на нуль")
             binding.tvDisplay.text = "Помилка"
             resetState()
             return
         }
 
         val result = calculateResult(num1, num2, currentOperation!!)
-        Log.d(TAG, "Обчислено: $num1 $currentOperation $num2 = $result")
+        Timber.d("Обчислено: $num1 $currentOperation $num2 = $result")
 
         binding.tvDisplay.text = formatResult(result)
         resetState()
@@ -123,19 +148,17 @@ class MainActivity : AppCompatActivity() {
     private fun onBackspaceClick() {
         val currentText = binding.tvDisplay.text.toString()
 
-        // Якщо зафіксовано помилку або готується новий ввід, Backspace просто скидає на "0"
         if (isNewInput || currentText == "Помилка" || currentText.length <= 1) {
             binding.tvDisplay.text = "0"
             isNewInput = true
             return
         }
 
-        // Видаляємо останній символ
         binding.tvDisplay.text = currentText.substring(0, currentText.length - 1)
     }
 
     private fun onClearClick() {
-        Log.d(TAG, "Повне очищення калькулятора")
+        Timber.d("Повне очищення калькулятора")
         binding.tvDisplay.text = "0"
         resetState()
     }
