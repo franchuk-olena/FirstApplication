@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("androidx.lifecycle:lifecycle-process:2.8.7")
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
