@@ -10,15 +10,23 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    // Створюємо екземпляри обзерверів (Частини 1 та 2)
+    private val audioPlayer = AudioPlayer()
+    private val analyticsTracker = AnalyticsTracker()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Підписуємо обох спостерігачів на життєвий цикл Activity
+        lifecycle.addObserver(audioPlayer)
+        lifecycle.addObserver(analyticsTracker)
+
         Timber.d("MainActivity: onCreate() викликано")
 
-        // Кнопка для переходу на SecondActivity (для Частини 3)
-        binding.btnOpenSecond?.setOnClickListener {
+        // Кнопка для відкриття SecondActivity
+        binding.btnOpenSecond.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
             startActivity(intent)
         }
