@@ -14,10 +14,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Перехід на другу Activity
+        // Реєструємо слухача
+        UserTracker.register(this)
+
         binding.btnOpenSecond.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Правильне виправлення: відв'язуємо Context при знищенні Activity
+        UserTracker.unregister(this)
     }
 }
