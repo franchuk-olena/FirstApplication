@@ -1,33 +1,38 @@
 package com.example.firstapplication
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
-import com.example.firstapplication.databinding.ActivitySecondBinding
+import timber.log.Timber
 
 class SecondActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySecondBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySecondBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        Timber.d("SecondActivity: onCreate() викликано")
+    }
 
-        binding.runFirstActivityButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
+    override fun onStart() {
+        super.onStart()
+        Timber.d("SecondActivity: onStart() викликано")
+    }
 
-        binding.sendEmailButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = "mailto:".toUri()
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("example@example.com"))
-                putExtra(Intent.EXTRA_SUBJECT, "Тема листа")
-                putExtra(Intent.EXTRA_TEXT, "Текст вашого повідомлення")
-            }
-            startActivity(Intent.createChooser(intent, "Оберіть поштовий клієнт"))
-        }
+    override fun onResume() {
+        super.onResume()
+        Timber.d("SecondActivity: onResume() викликано")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.d("SecondActivity: onPause() викликано")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.d("SecondActivity: onStop() викликано")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("SecondActivity: onDestroy() викликано")
     }
 }
