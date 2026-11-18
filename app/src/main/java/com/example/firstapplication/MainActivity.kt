@@ -1,53 +1,47 @@
 package com.example.firstapplication
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.firstapplication.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    // Отримуємо TimerViewModel
-    private val viewModel: TimerViewModel by viewModels()
+    private val viewModel: DownloadViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Ініціалізація View Binding (оскільки він увімкнений у вашому gradle)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        UserTracker.register(this)
-
-        // 1. Спостереження за значенням таймера
-        viewModel.timerLiveData.observe(this) { seconds ->
-            binding.tvTimer.text = seconds.toString()
+        binding.btnDownload.setOnClickListener {
+            viewModel.startDownload()
         }
 
-        // 2. Блокування кнопок під час відліку
-        viewModel.isTimerRunning.observe(this) { isRunning ->
-            binding.btnStart.isEnabled = !isRunning
-            binding.etSecondsInput.isEnabled = !isRunning
+        binding.btnCancel.setOnClickListener {
+            viewModel.cancelDownload()
         }
 
-        // 3. Обробники кліків
-        binding.btnStart.setOnClickListener {
-            viewModel.startTimer(binding.etSecondsInput.text.toString())
-        }
-
-        binding.btnReset.setOnClickListener {
-            viewModel.resetTimer()
-        }
-
-        binding.btnOpenSecond.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java)
-            startActivity(intent)
-        }
+        observeUiState()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        UserTracker.unregister(this)
+    private fun observeUiState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    binding.progressBar.progress = state.progress
+                    binding.tvStatus.text = state.statusText
+                    binding.btnDownload.isEnabled = !state.isDownloading
+                    binding.btnCancel.isEnabled = state.isDownloading
+                }
+            }
+        }
     }
 }

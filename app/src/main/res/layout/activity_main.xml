@@ -6,14 +6,16 @@
     android:layout_height="match_parent"
     android:padding="24dp">
 
-    <!-- Введення секунд -->
+    <!-- Введення секунд (або збережено для інтерфейсу) -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Час у секундах (напр. 30)"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSecondsInput"
@@ -22,49 +24,65 @@
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Циферблат таймера -->
+    <!-- Текст статусу завантаження -->
     <TextView
-        android:id="@+id/tvTimer"
+        android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="30"
-        android:textSize="64sp"
+        android:text="Готово до завантаження"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btnStart"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputLayout"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputLayout" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Кнопка Старт -->
+    <!-- ProgressBar для завантаження файлу -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        app:layout_constraintTop_toBottomOf="@id/tvStatus"
+        app:layout_constraintBottom_toTopOf="@+id/btnDownload"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Кнопка Скачати (колишня btnStart, змінено ID) -->
     <Button
-        android:id="@+id/btnStart"
+        android:id="@+id/btnDownload"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="Старт"
+        android:text="Скачати файл"
         app:layout_constraintBottom_toTopOf="@+id/btnOpenSecond"
-        app:layout_constraintEnd_toStartOf="@+id/btnReset"
+        app:layout_constraintEnd_toStartOf="@+id/btnCancel"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Кнопка Скидання -->
+    <!-- Кнопка Скасувати (колишня btnReset, змінено ID) -->
     <Button
-        android:id="@+id/btnReset"
+        android:id="@+id/btnCancel"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Скидання"
+        android:enabled="false"
+        android:text="Скасувати"
         app:layout_constraintBottom_toTopOf="@+id/btnOpenSecond"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnStart" />
+        app:layout_constraintStart_toEndOf="@+id/btnDownload" />
 
-    <!-- Ваша кнопка переходу на SecondActivity -->
+    <!-- Кнопка переходу на SecondActivity -->
     <Button
         android:id="@+id/btnOpenSecond"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Відкрити SecondActivity"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
